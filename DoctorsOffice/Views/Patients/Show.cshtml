@@ -1,0 +1,29 @@
+
+
+@using DoctorsOffice.Models
+@model DoctorsOffice.Models.Patient
+
+
+<h2>Patient Details</h2>
+<hr/>
+
+<h3>@Html.DisplayNameFor(model => model.Name): @Html.DisplayFor(model => model.Name)<h3>
+<h3>@Html.DisplayNameFor(model => model.Birthday): @Html.DisplayFor(model => model.Birthday)<h3>
+
+@if(@Model.JoinEntities.Count == 0)
+{
+  <p>This patient is not assigned a doctor</p>
+}
+else
+{
+  <h4>This Patient is assigned the following doctor:</h4>
+  <ul>
+    @foreach(DoctorPatient join in Model.JoinEntities)
+    { 
+      <li>Doctor: @join.Doctor.Name</li>
+    }
+  </ul>
+}
+
+<p>@Html.ActionLink("Assign a Doctor", "AddDoctor", new {id = Model.PatientId})</p>
+
