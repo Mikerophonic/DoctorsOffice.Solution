@@ -33,31 +33,37 @@ namespace DoctorsOffice.Controllers
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
-    
-    public ActionResult AddDoctor(int id)
+
+    public ActionResult Show(int id)
     {
-      Patient thisPatient = _db.Patients.FirstOrDefault(patients => patients.PatientId == id);
-      ViewBag.DoctorId = new SelectList(_db.Doctors, "DoctorId", "Name");
-      return View(thisPatient);
+      Doctor thisDoctor = _db.Doctors
+                              .Include(Doctor => Doctor.JoinEntities)
+                              .ThenInclude(join => join.Patient)
+                              .FirstOrDefault(doctor => doctor.DoctorId == id);
+      return View(thisDoctor);
+    }
+
+      public ActionResult AddPatient(int id)
+    {
+      Doctor thisDoctor = _db.Doctors.FirstOrDefault(doctors => doctors.DoctorId == id);
+      ViewBag.PatientId = new SelectList(_db.Patients, "PatientId", "Name");
+      return View(thisDoctor);
     }
 
     [HttpPost]
-    public ActionResult AddDoctor(Doctor doctor, int patientId)
+    public ActionResult AddPatient(Patient patient, int doctorId)
     {
       #nullable enable
-      DoctorPatient? joinEntity = _db.DoctorsPatients.FirstOrDefault(join => (join.DoctorId == doctor.DoctorId && join.PatientId == patientId));
+      DoctorPatient? joinEntity = _db.DoctorsPatients.FirstOrDefault(join => (join.PatientId == patient.PatientId && join.DoctorId == doctorId));
       #nullable disable
-      if(joinEntity == null && patientId != 0)
+      if(joinEntity == null && doctorId != 0)
       {
-        _db.DoctorsPatients.Add(new DoctorPatient() { DoctorId = doctor.DoctorId, PatientId = patientId });
+        _db.DoctorsPatients.Add(new DoctorPatient() { PatientId = patient.PatientId, DoctorId = doctorId });
         _db.SaveChanges();
       }
-      return RedirectToAction("Details", new { id = patientId });
+      return RedirectToAction("Show", new { id = doctorId });
     }
-
-  }
-
-
+ }
 }
 
 

@@ -12,8 +12,8 @@ namespace DoctorsOffice.Models
     public string Name { get; set; }
     [Required(ErrorMessage="Birthday cannot be empty")]
     public DateTime Birthday { get; set;}
-    public Doctor Doctor { get; set; }
-    public int DoctorId { get; set; }
-    public List<DoctorPatient> JoinEntities { get;}
+    // public Doctor Doctor { get; set; }
+    // public int DoctorId { get; set; }
+    public List<DoctorPatient> JoinEntities { get; set;}
   }
 }
